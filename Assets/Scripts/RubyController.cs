@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,9 +6,23 @@ using UnityEngine;
 public class RubyController : MonoBehaviour
 {
     private Rigidbody2D rigidbody2d;
+    
+    public int speed=3;//ruby的速度
+    //Ruby的生命值
     public int maxHealth = 5;//最大生命值
     private int currentHealth;//当前生命值
 
+    public int Health{get {return currentHealth;}}
+
+    //RUby的无敌时间
+    public float timeInvincible = 0.2f;//无敌时间常量
+    public bool isInvincible;
+    public float invincibleTimer;//计时器
+
+    private Vector2 lookDirection = new Vector2(1,0);
+    private Animator animator;
+
+    public GameObject projectilePrefab;
 
 
     // Start is called before the first frame update
@@ -16,6 +31,7 @@ public class RubyController : MonoBehaviour
         //Application.targetFrameRate = 10;
         rigidbody2d = GetComponent<Rigidbody2D>();
         currentHealth = maxHealth;
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -24,18 +40,90 @@ public class RubyController : MonoBehaviour
         //玩家输入监听
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
+
+        Vector2 move = new Vector2(horizontal,vertical);
+        //当前玩家输入的某个轴向值不为0
+        if (!Mathf.Approximately(move.x,0)||!Mathf.Approximately(move.y,0))
+        {
+            lookDirection.Set(move.x,move.y);
+            lookDirection.Normalize();
+        }
+
+        //动画控制
+        animator.SetFloat("Look X",lookDirection.x);
+        animator.SetFloat("Look Y",lookDirection.y);
+        animator.SetFloat("Speed",move.magnitude);
+
+        //移动
         Vector2 position = transform.position;
         //Ruby的水平竖直移动
-        position.x = position.x + 3*horizontal*Time.deltaTime;
-        position.y = position.y + 3*vertical*Time.deltaTime;
+        // position.x = position.x + speed*horizontal*Time.deltaTime;
+        // position.y = position.y + speed*vertical*Time.deltaTime;
+        position = position + speed*move*Time.deltaTime;
         //transform.position = position;
         rigidbody2d.MovePosition(position);
+
+        //无敌时间计算
+        if (isInvincible)
+        {
+            invincibleTimer = invincibleTimer - Time.deltaTime;
+            if (invincibleTimer<=0)
+            {
+                isInvincible = false;
+            }
+        }
+
+        //修理机器人
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            Launch();
+
+        }
+
+        //检测是否与NPC对话
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            RaycastHit2D hit=Physics2D.Raycast(rigidbody2d.position+Vector2.up*0.2f,
+                lookDirection,1.5f,LayerMask.GetMask("NPC"));
+            if (hit.collider!=null)
+            {
+                //Debug.Log("当前射线检测碰撞到的游戏物体是："+hit.collider,gameObject);
+                NPCDialog npcDialog = hit.collider.GetComponent<NPCDialog>();
+                if(npcDialog!=null)
+                {
+                    npcDialog.DisplayDialog();
+
+                }
+
+
+            }
+        }
+
     }
 
-    private void ChangeHealth(int amount)
+    public void ChangeHealth(int amount)
     {
+        if (amount<0)
+        {
+            if (isInvincible)
+            {
+                return;
+            }
+            //受到伤害
+            isInvincible = true;
+            invincibleTimer = timeInvincible;
+        }
         currentHealth = Mathf.Clamp(currentHealth+amount,0,maxHealth);
         Debug.Log(currentHealth+"/"+maxHealth);
     }
     
+    private void Launch()
+    {
+        GameObject projectileObject = Instantiate(projectilePrefab,rigidbody2d.position,Quaternion.identity);
+        Projectile projectile=projectileObject.GetComponent<Projectile>();
+        projectile.Launch(lookDirection,300);
+        animator.SetTrigger("Launch ");
+    }
+
+
 }
