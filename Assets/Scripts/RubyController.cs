@@ -32,6 +32,8 @@ public class RubyController : MonoBehaviour
     public AudioClip attackSoundClip;
     public AudioClip walkSound;
 
+    private Vector3 respawnPosition;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -40,6 +42,7 @@ public class RubyController : MonoBehaviour
         currentHealth = maxHealth;
         animator = GetComponent<Animator>();
         //audioSource = GetComponent<AudioSource>();
+        respawnPosition = transform.position;
 
     }
 
@@ -135,6 +138,12 @@ public class RubyController : MonoBehaviour
         }
         currentHealth = Mathf.Clamp(currentHealth+amount,0,maxHealth);
         //Debug.Log(currentHealth+"/"+maxHealth);
+
+        if (currentHealth<=0)
+        {
+            Respawn();
+        }
+
         UIHealthBar.instance.SetValue(currentHealth/(float)maxHealth);
     }
     
@@ -154,6 +163,12 @@ public class RubyController : MonoBehaviour
     public void PlaySound(AudioClip audioClip)
     {
         audioSource.PlayOneShot(audioClip);
+    }
+
+    private void Respawn()
+    {
+        ChangeHealth(maxHealth);
+        transform.position = respawnPosition;
     }
 
 }

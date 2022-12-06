@@ -11,7 +11,7 @@ public class NPCDialog : MonoBehaviour
     public Text  dialogText;
     public AudioSource audioSource;
     public AudioClip completeTaskclip;
-
+    private bool hasPlayed;
 
     // Start is called before the first frame update
     void Start()
@@ -42,7 +42,13 @@ public class NPCDialog : MonoBehaviour
         {
             //已经完成任务，需要修改对话框内容
             dialogText.text="谢谢你，你真的太棒了！";
-            audioSource.PlayOneShot(completeTaskclip);
+            if (hasPlayed)
+            {
+                audioSource.PlayOneShot(completeTaskclip);
+                hasPlayed = true;
+            
+            }
+            
         }
     }
 
