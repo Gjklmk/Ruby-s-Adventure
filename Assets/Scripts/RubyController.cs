@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class RubyController : MonoBehaviour
 {
+    //public Joystick joystick;
     private Rigidbody2D rigidbody2d;
     
     public int speed=3;//ruby的速度
@@ -122,10 +123,14 @@ public class RubyController : MonoBehaviour
             }
         }
 
-        //摇杆
-        horizontal = horizontal ==0 ? variableJoystick.Horizontal : horizontal;
-        vertical = vertical ==0 ? variableJoystick.Vertical : vertical;
+         //摇杆
+        void FixedUpdate()
+        {
+            horizontal = horizontal ==0 ? variableJoystick.Horizontal : horizontal;
+            vertical = vertical ==0 ? variableJoystick.Vertical : vertical;
 
+        }
+        
     }
 
     public void ChangeHealth(int amount)
