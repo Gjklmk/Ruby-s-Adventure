@@ -34,6 +34,8 @@ public class RubyController : MonoBehaviour
 
     private Vector3 respawnPosition;
 
+    public VariableJoystick variableJoystick;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -119,6 +121,10 @@ public class RubyController : MonoBehaviour
 
             }
         }
+
+        //摇杆
+        horizontal = horizontal ==0 ? variableJoystick.Horizontal : horizontal;
+        vertical = vertical ==0 ? variableJoystick.Vertical : vertical;
 
     }
 
