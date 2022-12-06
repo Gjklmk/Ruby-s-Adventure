@@ -25,6 +25,14 @@ public class EnemyController : MonoBehaviour
 
     public ParticleSystem smokeEffect;
 
+    private AudioSource audioSource;
+
+    public AudioClip fixedSound;
+
+    public AudioClip[] hitSounds;
+
+    public GameObject hitEffectParticle;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +43,7 @@ public class EnemyController : MonoBehaviour
         // animator.SetBool("Vertical",vertical);
         PlayMoveAnimation();
         broken = true;
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -77,6 +86,7 @@ public class EnemyController : MonoBehaviour
         if (rubyController!=null)
         {
             rubyController.ChangeHealth(-1);
+            
         }
     }
 
@@ -96,13 +106,30 @@ public class EnemyController : MonoBehaviour
 
     }
   
+    //修复机器人
     public void Fix()
     {
+        Instantiate(hitEffectParticle,transform.position,Quaternion.identity);
         broken = false;
         rigidbody2d.simulated = false;
         animator.SetTrigger("Fixed");
+        smokeEffect.Stop();
+        int randomNum = Random.Range(0,2);
+        float randomNum2 = Random.Range(1f,2f);
+        audioSource.PlayOneShot(hitSounds[randomNum]);
+        Invoke("PlayFixedSound",1f);
+        UIHealthBar.instance.fixedNum++;
     }
 
+    private void PlayFixedSound()
+    {
+        audioSource.PlayOneShot(fixedSound);
+        Invoke("StopAudioSoucePlay",1f);
+    }
 
+    private void StopAudioSoucePlay()
+    {
+        audioSource.Stop();
+    }
 
 }

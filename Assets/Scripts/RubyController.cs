@@ -15,7 +15,7 @@ public class RubyController : MonoBehaviour
     public int Health{get {return currentHealth;}}
 
     //RUby的无敌时间
-    public float timeInvincible = 0.2f;//无敌时间常量
+    public float timeInvincible = 2.0f;//无敌时间常量
     public bool isInvincible;
     public float invincibleTimer;//计时器
 
@@ -24,6 +24,13 @@ public class RubyController : MonoBehaviour
 
     public GameObject projectilePrefab;
 
+    public AudioSource audioSource;
+
+    public AudioSource walkAudioSource;
+
+    public AudioClip playerHit;
+    public AudioClip attackSoundClip;
+    public AudioClip walkSound;
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +39,8 @@ public class RubyController : MonoBehaviour
         rigidbody2d = GetComponent<Rigidbody2D>();
         currentHealth = maxHealth;
         animator = GetComponent<Animator>();
+        //audioSource = GetComponent<AudioSource>();
+
     }
 
     // Update is called once per frame
@@ -47,6 +56,15 @@ public class RubyController : MonoBehaviour
         {
             lookDirection.Set(move.x,move.y);
             lookDirection.Normalize();
+            if (!walkAudioSource.isPlaying)
+            {
+                walkAudioSource.clip = walkSound;
+                walkAudioSource.Play();
+            }
+        }
+        else
+        {
+            walkAudioSource.Stop();
         }
 
         //动画控制
@@ -106,24 +124,36 @@ public class RubyController : MonoBehaviour
         if (amount<0)
         {
             if (isInvincible)
-            {
+            { 
                 return;
             }
             //受到伤害
             isInvincible = true;
             invincibleTimer = timeInvincible;
+            animator.SetTrigger("Hit");
+            PlaySound(playerHit);
         }
         currentHealth = Mathf.Clamp(currentHealth+amount,0,maxHealth);
-        Debug.Log(currentHealth+"/"+maxHealth);
+        //Debug.Log(currentHealth+"/"+maxHealth);
+        UIHealthBar.instance.SetValue(currentHealth/(float)maxHealth);
     }
     
     private void Launch()
     {
-        GameObject projectileObject = Instantiate(projectilePrefab,rigidbody2d.position,Quaternion.identity);
+        if (!UIHealthBar.instance.hasTask)
+        {
+            return;
+        }
+        GameObject projectileObject = Instantiate(projectilePrefab,rigidbody2d.position+Vector2.up*0.5f,Quaternion.identity);
         Projectile projectile=projectileObject.GetComponent<Projectile>();
         projectile.Launch(lookDirection,300);
-        animator.SetTrigger("Launch ");
+        animator.SetTrigger("Launch");
+        PlaySound(attackSoundClip);
     }
 
+    public void PlaySound(AudioClip audioClip)
+    {
+        audioSource.PlayOneShot(audioClip);
+    }
 
 }

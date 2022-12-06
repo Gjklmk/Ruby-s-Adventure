@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class HealthCollectible : MonoBehaviour
 {
-    
+    public AudioClip audioClip;
+
+    public GameObject effectParticle;
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //Debug.Log("与我们发生碰撞的对象是："+collision);
@@ -16,6 +19,9 @@ public class HealthCollectible : MonoBehaviour
             if (rubyController.Health<rubyController.maxHealth)
             {
                 rubyController.ChangeHealth(1);
+                rubyController.PlaySound(audioClip);
+
+                Instantiate(effectParticle,transform.position,Quaternion.identity);
                 Destroy(gameObject);
             }
             
