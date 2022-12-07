@@ -56,6 +56,10 @@ public class RubyController : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
+         //判断如果没有输入再获取摇杆的值
+        horizontal = horizontal == 0 ? variableJoystick.Horizontal : horizontal;
+        vertical = vertical == 0 ? variableJoystick.Vertical : vertical;
+
         Vector2 move = new Vector2(horizontal,vertical);
         //当前玩家输入的某个轴向值不为0
         if (!Mathf.Approximately(move.x,0)||!Mathf.Approximately(move.y,0))
@@ -124,12 +128,19 @@ public class RubyController : MonoBehaviour
         }
 
          //摇杆
-        void FixedUpdate()
-        {
-            horizontal = horizontal ==0 ? variableJoystick.Horizontal : horizontal;
-            vertical = vertical ==0 ? variableJoystick.Vertical : vertical;
+        // void FixedUpdate()
+        //  {
+        //     float horizontal = Input.GetAxis("Horizontal");
+        //     float vertical = Input.GetAxis("Vertical");
 
-        }
+        //     //判断如果没有输入再获取摇杆的值
+        //     horizontal = horizontal ==0 ? variableJoystick.Horizontal : horizontal;
+        //     vertical = vertical == 0 ? variableJoystick.Vertical : vertical;
+
+            
+        //  }
+         
+        
         
     }
 
