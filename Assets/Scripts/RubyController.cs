@@ -108,24 +108,30 @@ public class RubyController : MonoBehaviour
 
         }
 
-        //检测是否与NPC对话
-        if (Input.GetKeyDown(KeyCode.T))
+
+         if (Input.GetKeyDown(KeyCode.T))
         {
-            RaycastHit2D hit=Physics2D.Raycast(rigidbody2d.position+Vector2.up*0.2f,
-                lookDirection,1.5f,LayerMask.GetMask("NPC"));
-            if (hit.collider!=null)
-            {
-                //Debug.Log("当前射线检测碰撞到的游戏物体是："+hit.collider,gameObject);
-                NPCDialog npcDialog = hit.collider.GetComponent<NPCDialog>();
-                if(npcDialog!=null)
-                {
-                    npcDialog.DisplayDialog();
-
-                }
-
-
-            }
+            Dialog();
         }
+        
+        //检测是否与NPC对话
+        // if (Input.GetKeyDown(KeyCode.T))
+        // {
+        //     RaycastHit2D hit=Physics2D.Raycast(rigidbody2d.position+Vector2.up*0.2f,
+        //         lookDirection,1.5f,LayerMask.GetMask("NPC"));
+        //     if (hit.collider!=null)
+        //     {
+        //         //Debug.Log("当前射线检测碰撞到的游戏物体是："+hit.collider,gameObject);
+        //         NPCDialog npcDialog = hit.collider.GetComponent<NPCDialog>();
+        //         if(npcDialog!=null)
+        //         {
+        //             npcDialog.DisplayDialog();
+
+        //         }
+
+
+        //     }
+        // }
 
          //摇杆
         // void FixedUpdate()
@@ -142,6 +148,25 @@ public class RubyController : MonoBehaviour
          
         
         
+    }
+
+    //检测是否与NPC对话
+    public void Dialog()
+    {
+        RaycastHit2D hit=Physics2D.Raycast(rigidbody2d.position+Vector2.up*0.2f,
+                lookDirection,1.5f,LayerMask.GetMask("NPC"));
+            if (hit.collider!=null)
+            {
+                //Debug.Log("当前射线检测碰撞到的游戏物体是："+hit.collider,gameObject);
+                NPCDialog npcDialog = hit.collider.GetComponent<NPCDialog>();
+                if(npcDialog!=null)
+                {
+                    npcDialog.DisplayDialog();
+
+                }
+
+
+            }
     }
 
     public void ChangeHealth(int amount)
@@ -169,7 +194,7 @@ public class RubyController : MonoBehaviour
         UIHealthBar.instance.SetValue(currentHealth/(float)maxHealth);
     }
     
-    private void Launch()
+    public void Launch()
     {
         if (!UIHealthBar.instance.hasTask)
         {
