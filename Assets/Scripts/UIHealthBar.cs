@@ -1,17 +1,17 @@
-using System.Collections;
+using System.ColHealthBar : MonoBehaviour
+{
+    public Image mask;
+    private float originalSize;
+lections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIHealthBar : MonoBehaviour
-{
-    public Image mask;
-    private float originalSize;
-
+public class UI
     public static UIHealthBar instance {get;private set;}
 
     public bool hasTask;
-    public bool ifCompleteTask;
+    //public bool ifCompleteTask;
     public int fixedNum;
 
     private void Awake()

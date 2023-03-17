@@ -13,7 +13,7 @@ public class DamageZone : MonoBehaviour
         {
             
                 rubyController.ChangeHealth(-1);
-                Debug.Log("Ruby当前的生命值是："+rubyController.Health);
+                //Debug.Log("Ruby当前的生命值是："+rubyController.Health);
             
         }
         
