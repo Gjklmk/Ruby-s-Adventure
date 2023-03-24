@@ -1,17 +1,17 @@
-using System.ColHealthBar : MonoBehaviour
-{
-    public Image mask;
-    private float originalSize;
-lections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI
-    public static UIHealthBar instance {get;private set;}
+public class UIHealthBar : MonoBehaviour
+{
+    public Image mask;
+    private float originalSize;
+
+    public static UIHealthBar instance { get; private set; }
 
     public bool hasTask;
-    //public bool ifCompleteTask;
+    public bool ifCompleteTask;
     public int fixedNum;
 
     private void Awake()
@@ -29,14 +29,14 @@ public class UI
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     //设置当前UI血条的显示值
     public void SetValue(float fillPercent)
     {
         mask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,
-            originalSize*fillPercent);
+            originalSize * fillPercent);
     }
 
 
